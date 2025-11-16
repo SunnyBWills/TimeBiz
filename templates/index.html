@@ -29,15 +29,10 @@
         <div id="input-tab" class="tab-content active">
             <div class="glass-panel">
                 <h2>時間ログ入力</h2>
-                
-                <div class="form-group">
-                    <label for="log-date">日付</label>
-                    <input type="date" id="log-date" name="log-date" required>
-                </div>
 
                 <div class="form-group">
                     <label for="time-input">時間データ（3列形式で貼り付け）</label>
-                    <textarea 
+                    <textarea
                         id="time-input" 
                         name="time-input" 
                         rows="15" 
@@ -57,15 +52,9 @@
         <div id="heatmap-tab" class="tab-content">
             <div class="glass-panel">
                 <h2>ヒートマップ可視化</h2>
-                
-                <div class="form-group">
-                    <label for="heatmap-date">表示日付</label>
-                    <input type="date" id="heatmap-date" name="heatmap-date" required>
-                    <button id="load-button" class="load-button">データ読み込み</button>
-                </div>
 
                 <div id="heatmap-root" class="heatmap-container">
-                    <p class="empty-message">日付を選択して「データ読み込み」をクリックしてください</p>
+                    <p class="empty-message">最新の時間ログを自動で表示します</p>
                 </div>
             </div>
         </div>
