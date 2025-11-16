@@ -59,7 +59,7 @@ function CategoryColumn({ category, tasks, totalHours, allCategoriesTotal, categ
             }}
         >
             {/* カテゴリーヘッダー（固定高さ） */}
-            <div className={`category-header ${categoryColor.header} text-center font-bold rounded-t-lg border mb-1`} style={{ 
+            <div className={`category-header ${categoryColor.header} text-center font-bold rounded-t-lg border mb-1`} style={{
                 padding: '16px 12px',
                 height: `${headerHeight}px`,
                 display: 'flex',
@@ -70,24 +70,17 @@ function CategoryColumn({ category, tasks, totalHours, allCategoriesTotal, categ
                 textOverflow: 'ellipsis',
                 flexShrink: 0
             }}>
-                <div className="text-gray-800" style={{ 
-                    whiteSpace: 'nowrap', 
-                    overflow: 'hidden', 
+                <div className="text-gray-800" style={{
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     fontSize: '16px',
-                    lineHeight: '1.5',
-                    marginBottom: '4px'
+                    lineHeight: '1.5'
                 }}>{category}</div>
-                <div className="text-gray-600" style={{ 
+                <div className="text-gray-700 font-semibold" style={{
                     fontSize: '14px',
-                    lineHeight: '1.5',
-                    marginTop: '4px'
-                }}>合計: {totalHours.toFixed(2)}h</div>
-                <div className="text-gray-500 font-medium" style={{
-                    fontSize: '12px',
-                    lineHeight: '1.5',
-                    marginTop: '4px'
-                }}>({((totalHours / allCategoriesTotal) * 100).toFixed(1)}%)</div>
+                    lineHeight: '1.6'
+                }}>{`${totalHours.toFixed(2)}h (${((totalHours / allCategoriesTotal) * 100).toFixed(1)}%)`}</div>
             </div>
             
             {/* タスクリスト（固定高さのコンテナ内に配置） */}
@@ -118,13 +111,12 @@ function CategoryColumn({ category, tasks, totalHours, allCategoriesTotal, categ
                                 flexShrink: 0,
                                 display: 'flex',
                                 flexDirection: 'column',
-                                justifyContent: 'flex-start',
-                                gap: '6px',
+                                justifyContent: 'center',
+                                gap: '2px',
                                 overflow: 'hidden'
                             }}
                         >
-                            <div className="font-medium text-gray-800" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontSize: '14px', lineHeight: '1.4' }}>{task.taskName}</div>
-                            <div className="text-xs text-gray-500 font-medium" style={{ fontSize: '12px', lineHeight: '1.4', marginTop: '6px' }}>{globalRatio.toFixed(1)}%</div>
+                            <div className="font-medium text-gray-800" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontSize: '14px', lineHeight: '1.4' }}>{`${task.taskName}: ${globalRatio.toFixed(1)}%`}</div>
                         </div>
                     );
                 })}
