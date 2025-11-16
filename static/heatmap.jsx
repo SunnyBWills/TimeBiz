@@ -97,15 +97,20 @@ function CategoryColumn({ category, tasks, totalHours, allCategoriesTotal, categ
                     const globalRatio = (task.hours / allCategoriesTotal) * 100;
                     
                     // 計算済みの高さを使用（taskHeights配列から取得）
-                    const taskHeight = taskHeights[index] || 40;
-                    
+                    const taskHeight = taskHeights[index] || MIN_TASK_HEIGHT;
+
+                    const taskLabel = task.hours >= 50
+                        ? `${task.taskName}: ${task.hours.toFixed(1)}h (${globalRatio.toFixed(1)}%)`
+                        : `${task.taskName}: ${globalRatio.toFixed(1)}%`;
+
                     return (
                         <div
                             key={index}
                             className="task-card rounded-lg border transition-all hover:translate-x-1 hover:shadow-md"
                             style={{
                                 height: `${taskHeight}px`,
-                                padding: '12px',
+                                padding: '10px 12px',
+                                boxSizing: 'border-box',
                                 backgroundColor: categoryColor.bg,
                                 borderColor: categoryColor.border,
                                 flexShrink: 0,
@@ -116,7 +121,7 @@ function CategoryColumn({ category, tasks, totalHours, allCategoriesTotal, categ
                                 overflow: 'hidden'
                             }}
                         >
-                            <div className="font-medium text-gray-800" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontSize: '14px', lineHeight: '1.4' }}>{`${task.taskName}: ${globalRatio.toFixed(1)}%`}</div>
+                            <div className="font-medium text-gray-800" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontSize: '14px', lineHeight: '1.4' }}>{taskLabel}</div>
                         </div>
                     );
                 })}
@@ -137,7 +142,7 @@ function HeatmapVisualization({ data }) {
 
     // 【レイアウト定数】全列で共通の高さを定義
     const HEADER_HEIGHT = 110;   // カテゴリヘッダーの高さ（固定）
-    const MIN_TASK_HEIGHT = 40;   // タスクカードの最小高さ
+    const MIN_TASK_HEIGHT = 48;   // タスクカードの最小高さ（上下の余白を含めてテキストが収まるように調整）
     const TASK_GAP = 4;           // タスク間のgap（px）
 
     const [layout, setLayout] = React.useState({
