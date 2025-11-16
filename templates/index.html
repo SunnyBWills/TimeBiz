@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeBiz - 時間可視化アプリ</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel Standalone for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>TimeBiz</h1>
+            <p class="subtitle">時間をFinViz形式で可視化</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" data-tab="input">時間入力</button>
+            <button class="tab-button" data-tab="heatmap">ヒートマップ</button>
+        </div>
+
+        <!-- タブ1: 時間入力 -->
+        <div id="input-tab" class="tab-content active">
+            <div class="glass-panel">
+                <h2>時間ログ入力</h2>
+                
+                <div class="form-group">
+                    <label for="log-date">日付</label>
+                    <input type="date" id="log-date" name="log-date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="time-input">時間データ（3列形式で貼り付け）</label>
+                    <textarea 
+                        id="time-input" 
+                        name="time-input" 
+                        rows="15" 
+                        placeholder="列	案件名	時間数&#10;INVESTMENT	AI ETF	100&#10;WORK	FRST	20&#10;TECH	Crybotix3	5.5"
+                    ></textarea>
+                    <small class="help-text">タブ区切り、カンマ区切り、または複数スペース区切りの3列データを貼り付けてください</small>
+                </div>
+
+                <button id="save-button" class="save-button">保存</button>
+
+                <div id="message-area" class="message-area"></div>
+                <div id="error-list" class="error-list"></div>
+            </div>
+        </div>
+
+        <!-- タブ2: ヒートマップ -->
+        <div id="heatmap-tab" class="tab-content">
+            <div class="glass-panel">
+                <h2>ヒートマップ可視化</h2>
+                
+                <div class="form-group">
+                    <label for="heatmap-date">表示日付</label>
+                    <input type="date" id="heatmap-date" name="heatmap-date" required>
+                    <button id="load-button" class="load-button">データ読み込み</button>
+                </div>
+
+                <div id="heatmap-root" class="heatmap-container">
+                    <p class="empty-message">日付を選択して「データ読み込み」をクリックしてください</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+    <script type="text/babel" src="{{ url_for('static', filename='heatmap.jsx') }}"></script>
+</body>
+</html>
