@@ -1,5 +1,3 @@
-const { useState, useEffect } = React;
-
 // カテゴリー別の色定義
 const categoryColors = {
     'INVESTMENT': {
@@ -85,7 +83,7 @@ function CategoryColumn({ category, tasks, totalHours, allCategoriesTotal, categ
                     lineHeight: '1.5',
                     marginTop: '4px'
                 }}>合計: {totalHours.toFixed(2)}h</div>
-                <div className="text-gray-500 font-medium" style={{ 
+                <div className="text-gray-500 font-medium" style={{
                     fontSize: '12px',
                     lineHeight: '1.5',
                     marginTop: '4px'
@@ -120,13 +118,13 @@ function CategoryColumn({ category, tasks, totalHours, allCategoriesTotal, categ
                                 flexShrink: 0,
                                 display: 'flex',
                                 flexDirection: 'column',
-                                justifyContent: 'space-between',
+                                justifyContent: 'flex-start',
+                                gap: '6px',
                                 overflow: 'hidden'
                             }}
                         >
                             <div className="font-medium text-gray-800" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontSize: '14px', lineHeight: '1.4' }}>{task.taskName}</div>
-                            <div className="text-sm text-gray-600" style={{ fontSize: '13px', lineHeight: '1.4', marginTop: '4px' }}>{task.hours.toFixed(2)}h</div>
-                            <div className="text-xs text-gray-500 font-medium" style={{ fontSize: '12px', lineHeight: '1.4', marginTop: '4px' }}>{globalRatio.toFixed(1)}%</div>
+                            <div className="text-xs text-gray-500 font-medium" style={{ fontSize: '12px', lineHeight: '1.4', marginTop: '6px' }}>{globalRatio.toFixed(1)}%</div>
                         </div>
                     );
                 })}
@@ -147,9 +145,42 @@ function HeatmapVisualization({ data }) {
 
     // 【レイアウト定数】全列で共通の高さを定義
     const HEADER_HEIGHT = 110;   // カテゴリヘッダーの高さ（固定）
-    const TASK_AREA_HEIGHT = 600; // タスク部分の高さ（全列で共通・横長）
     const MIN_TASK_HEIGHT = 40;   // タスクカードの最小高さ
     const TASK_GAP = 4;           // タスク間のgap（px）
+
+    const [layout, setLayout] = React.useState({
+        containerWidth: window.innerWidth,
+        taskAreaHeight: Math.max(window.innerHeight - HEADER_HEIGHT - 220, 320)
+    });
+
+    const wrapperRef = React.useRef(null);
+
+    React.useEffect(() => {
+        const updateLayout = () => {
+            const fallbackTaskHeight = Math.max(window.innerHeight - HEADER_HEIGHT - 220, 320);
+
+            if (wrapperRef.current) {
+                const rect = wrapperRef.current.getBoundingClientRect();
+                const availableHeight = Math.max(window.innerHeight - rect.top - 24, 320);
+                setLayout({
+                    containerWidth: rect.width,
+                    taskAreaHeight: Math.max(availableHeight - HEADER_HEIGHT, 220)
+                });
+            } else {
+                setLayout(prev => ({
+                    ...prev,
+                    containerWidth: window.innerWidth,
+                    taskAreaHeight: fallbackTaskHeight
+                }));
+            }
+        };
+
+        updateLayout();
+        window.addEventListener('resize', updateLayout);
+        return () => window.removeEventListener('resize', updateLayout);
+    }, [data]);
+
+    const TASK_AREA_HEIGHT = layout.taskAreaHeight;
 
     // カテゴリごとにデータをグループ化
     const categoryMap = {};
@@ -253,24 +284,10 @@ function HeatmapVisualization({ data }) {
         }
     });
     
-    // 親コンテナの幅を取得（画面幅を最大限に使用）
-    const [containerWidth, setContainerWidth] = React.useState(window.innerWidth);
-    
-    React.useEffect(() => {
-        const updateWidth = () => {
-            // 画面幅をそのまま使用
-            const availableWidth = window.innerWidth;
-            setContainerWidth(availableWidth);
-        };
-        
-        updateWidth();
-        window.addEventListener('resize', updateWidth);
-        return () => window.removeEventListener('resize', updateWidth);
-    }, [data]);
-
     return (
-        <div 
+        <div
             className="heatmap-wrapper flex items-stretch"
+            ref={wrapperRef}
             style={{
                 width: '100%',
                 height: `${HEADER_HEIGHT + TASK_AREA_HEIGHT}px`,
@@ -286,7 +303,7 @@ function HeatmapVisualization({ data }) {
                     totalHours={categoryTotals[category]}
                     allCategoriesTotal={allCategoriesTotal}
                     categoryColor={categoryColors[category] || categoryColors['OTHER']}
-                    containerWidth={containerWidth}
+                    containerWidth={layout.containerWidth}
                     gapSize={5}
                     categoryCount={sortedCategories.length}
                     headerHeight={HEADER_HEIGHT}

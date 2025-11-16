@@ -238,18 +238,26 @@ header h1 {
   color: #d32f2f;
 }
 
+#heatmap-tab .glass-panel {
+  height: calc(100vh - 180px);
+  display: flex;
+  flex-direction: column;
+}
+
 .heatmap-container {
   margin-top: 10px;
-  min-height: 400px;
   padding: 0;
   background: var(--white);
   border-radius: 0;
   border: none;
-  height: auto;
-  overflow: visible;
+  height: 100%;
+  min-height: calc(100vh - 220px);
+  overflow: hidden;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .empty-message {
@@ -264,8 +272,8 @@ header h1 {
   align-items: stretch;
   flex-wrap: nowrap;
   width: 100%;
-  min-height: auto;
-  height: auto;
+  min-height: calc(100vh - 260px);
+  height: 100%;
   max-width: 100%;
   box-sizing: border-box;
 }
