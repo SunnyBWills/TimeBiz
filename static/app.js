@@ -2,6 +2,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
+    const heatmapTabButton = document.querySelector('[data-tab="heatmap"]');
 
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -17,16 +18,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 日付のデフォルト値を今日に設定
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('log-date').value = today;
-    document.getElementById('heatmap-date').value = today;
-
     // 保存ボタンのイベント
     document.getElementById('save-button').addEventListener('click', handleSave);
 
-    // 読み込みボタンのイベント
-    document.getElementById('load-button').addEventListener('click', handleLoad);
+    // ヒートマップタブ表示時にも最新データを読み込む
+    heatmapTabButton.addEventListener('click', handleLoad);
 
     // 初期表示時にヒートマップを読み込む
     handleLoad();
@@ -107,9 +103,13 @@ function parseTimeInput(text) {
     return { rows, errors };
 }
 
+function getTodayDateString() {
+    return new Date().toISOString().split('T')[0];
+}
+
 // 保存処理
 async function handleSave() {
-    const logDate = document.getElementById('log-date').value;
+    const logDate = getTodayDateString();
     const timeInput = document.getElementById('time-input').value;
     const messageArea = document.getElementById('message-area');
     const errorList = document.getElementById('error-list');
@@ -119,12 +119,6 @@ async function handleSave() {
     messageArea.textContent = '';
     errorList.classList.remove('show');
     errorList.innerHTML = '';
-
-    // 日付バリデーション
-    if (!logDate) {
-        showError('日付を選択してください');
-        return;
-    }
 
     // 入力テキストのパース
     const parseResult = parseTimeInput(timeInput);
@@ -162,7 +156,6 @@ async function handleSave() {
             
             // ヒートマップタブに切り替えてデータを再読み込み
             document.querySelector('[data-tab="heatmap"]').click();
-            document.getElementById('heatmap-date').value = logDate;
             await handleLoad();
         } else {
             if (data.errors && Array.isArray(data.errors)) {
@@ -178,13 +171,8 @@ async function handleSave() {
 
 // ヒートマップ読み込み処理
 async function handleLoad() {
-    const logDate = document.getElementById('heatmap-date').value;
+    const logDate = getTodayDateString();
     const heatmapRoot = document.getElementById('heatmap-root');
-
-    if (!logDate) {
-        heatmapRoot.innerHTML = '<p class="empty-message">日付を選択してください</p>';
-        return;
-    }
 
     try {
         const response = await fetch(`/api/time-logs?date=${logDate}`);
@@ -193,11 +181,11 @@ async function handleLoad() {
         if (response.ok) {
             // ヒートマップをリセット（完全にクリア）
             heatmapRoot.innerHTML = '';
-            
+
             if (data.rows && data.rows.length > 0) {
                 renderHeatmap(data);
             } else {
-                heatmapRoot.innerHTML = '<p class="empty-message">この日付のデータはありません</p>';
+                heatmapRoot.innerHTML = '<p class="empty-message">本日のデータはまだ登録されていません</p>';
             }
         } else {
             heatmapRoot.innerHTML = `<p class="empty-message">エラー: ${data.message || 'データの取得に失敗しました'}</p>`;
