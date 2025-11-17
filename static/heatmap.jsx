@@ -33,8 +33,14 @@ const categoryColors = {
 };
 
 
+const HOURS_PER_YEAR = 8760;
+const HEADER_HEIGHT = 110;   // カテゴリヘッダーの高さ（固定）
+const MIN_TASK_HEIGHT = 48;   // タスクカードの最小高さ（上下の余白を含めてテキストが収まるように調整）
+const TASK_GAP = 4;           // タスク間のgap（px）
+
+
 // カテゴリー列コンポーネント
-function CategoryColumn({ category, tasks, totalHours, allCategoriesTotal, categoryColor, containerWidth = 100, gapSize = 20, categoryCount = 1, headerHeight = 110, taskAreaHeight = 600, taskHeights = [] }) {
+function CategoryColumn({ category, tasks, totalHours, allCategoriesTotal, categoryColor, containerWidth = 100, gapSize = 20, categoryCount = 1, headerHeight = HEADER_HEIGHT, taskAreaHeight = 600, taskHeights = [] }) {
     // 横幅の比率を計算（全カテゴリー合計に対する比率）
     const widthRatio = (totalHours / allCategoriesTotal) * 100;
     
@@ -80,7 +86,7 @@ function CategoryColumn({ category, tasks, totalHours, allCategoriesTotal, categ
                 <div className="text-gray-700 font-semibold" style={{
                     fontSize: '20px',
                     lineHeight: '1.6'
-                }}>{`${totalHours.toFixed(1)}h (${((totalHours / allCategoriesTotal) * 100).toFixed(1)}%)`}</div>
+                }}>{`${totalHours.toFixed(1)}h (${((totalHours / allCategoriesTotal) * 100).toFixed(1)}%), ${(totalHours / HOURS_PER_YEAR * 100).toFixed(1)}%`}</div>
             </div>
             
             {/* タスクリスト（固定高さのコンテナ内に配置） */}
@@ -95,11 +101,12 @@ function CategoryColumn({ category, tasks, totalHours, allCategoriesTotal, categ
                 {tasks.map((task, index) => {
                     // 表示する比率は全カテゴリー合計に対する比率
                     const globalRatio = (task.hours / allCategoriesTotal) * 100;
-                    
+                    const yearRatio = (task.hours / HOURS_PER_YEAR) * 100;
+
                     // 計算済みの高さを使用（taskHeights配列から取得）
                     const taskHeight = taskHeights[index] || MIN_TASK_HEIGHT;
 
-                    const taskLabel = `${task.taskName}: ${task.hours.toFixed(1)}h (${globalRatio.toFixed(1)}%)`;
+                    const taskLabel = `${task.taskName}: ${task.hours.toFixed(1)}h (${globalRatio.toFixed(1)}%), ${yearRatio.toFixed(1)}%`;
 
                     return (
                         <div
@@ -137,11 +144,6 @@ function HeatmapVisualization({ data }) {
             </div>
         );
     }
-
-    // 【レイアウト定数】全列で共通の高さを定義
-    const HEADER_HEIGHT = 110;   // カテゴリヘッダーの高さ（固定）
-    const MIN_TASK_HEIGHT = 48;   // タスクカードの最小高さ（上下の余白を含めてテキストが収まるように調整）
-    const TASK_GAP = 4;           // タスク間のgap（px）
 
     const [layout, setLayout] = React.useState({
         containerWidth: window.innerWidth,
