@@ -74,13 +74,13 @@ function CategoryColumn({ category, tasks, totalHours, allCategoriesTotal, categ
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
-                    fontSize: '16px',
+                    fontSize: '25px',
                     lineHeight: '1.5'
                 }}>{category}</div>
                 <div className="text-gray-700 font-semibold" style={{
-                    fontSize: '14px',
+                    fontSize: '20px',
                     lineHeight: '1.6'
-                }}>{`${totalHours.toFixed(2)}h (${((totalHours / allCategoriesTotal) * 100).toFixed(1)}%)`}</div>
+                }}>{`${totalHours.toFixed(1)}h (${((totalHours / allCategoriesTotal) * 100).toFixed(1)}%)`}</div>
             </div>
             
             {/* タスクリスト（固定高さのコンテナ内に配置） */}
@@ -99,9 +99,7 @@ function CategoryColumn({ category, tasks, totalHours, allCategoriesTotal, categ
                     // 計算済みの高さを使用（taskHeights配列から取得）
                     const taskHeight = taskHeights[index] || MIN_TASK_HEIGHT;
 
-                    const taskLabel = task.hours >= 50
-                        ? `${task.taskName}: ${task.hours.toFixed(1)}h (${globalRatio.toFixed(1)}%)`
-                        : `${task.taskName}: ${globalRatio.toFixed(1)}%`;
+                    const taskLabel = `${task.taskName}: ${task.hours.toFixed(1)}h (${globalRatio.toFixed(1)}%)`;
 
                     return (
                         <div
@@ -121,7 +119,7 @@ function CategoryColumn({ category, tasks, totalHours, allCategoriesTotal, categ
                                 overflow: 'hidden'
                             }}
                         >
-                            <div className="font-medium text-gray-800" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontSize: '14px', lineHeight: '1.4' }}>{taskLabel}</div>
+                            <div className="font-medium text-gray-800" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontSize: '20px', lineHeight: '1.4' }}>{taskLabel}</div>
                         </div>
                     );
                 })}
