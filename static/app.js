@@ -226,14 +226,30 @@ function renderHeatmap(data) {
     // 既存の内容を完全にリセット
     heatmapRoot.innerHTML = '';
     
-    // Reactコンポーネントをレンダリング
-    if (window.HeatmapVisualization && React && ReactDOM) {
-        const root = ReactDOM.createRoot(heatmapRoot);
-        root.render(React.createElement(window.HeatmapVisualization, { data: data }));
-    } else {
-        // Reactが読み込まれていない場合のフォールバック
-        heatmapRoot.innerHTML = '<p class="empty-message">Reactコンポーネントが読み込まれていません</p>';
+    // Reactコンポーネントが読み込まれるまで待機
+    function tryRender() {
+        if (window.HeatmapVisualization && React && ReactDOM) {
+            try {
+                const root = ReactDOM.createRoot(heatmapRoot);
+                root.render(React.createElement(window.HeatmapVisualization, { data: data }));
+            } catch (error) {
+                console.error('Reactレンダリングエラー:', error);
+                heatmapRoot.innerHTML = `<p class="empty-message">レンダリングエラー: ${error.message}</p>`;
+            }
+        } else {
+            // まだ読み込まれていない場合、少し待ってから再試行
+            setTimeout(() => {
+                if (window.HeatmapVisualization && React && ReactDOM) {
+                    tryRender();
+                } else {
+                    // 最大5秒待っても読み込まれない場合
+                    heatmapRoot.innerHTML = '<p class="empty-message">Reactコンポーネントが読み込まれていません。ページを再読み込みしてください。</p>';
+                }
+            }, 100);
+        }
     }
+    
+    tryRender();
 }
 
 // メッセージ表示関数

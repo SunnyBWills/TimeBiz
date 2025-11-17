@@ -58,7 +58,7 @@ function CategoryColumn({ category, tasks, totalHours, allCategoriesTotal, categ
             className="category-column flex flex-col"
             style={{
                 width: `${actualWidth}px`,
-                flexBasis: `${widthRatio}%`,
+                flexBasis: `${actualWidth}px`,   
                 height: `${columnHeight}px`,
                 flexShrink: 0,
                 flexGrow: 0
