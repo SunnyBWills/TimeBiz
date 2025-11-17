@@ -109,24 +109,6 @@ function getTodayDateString() {
     return new Date().toISOString().split('T')[0];
 }
 
-function calculateTotalHours(rows = []) {
-    return rows.reduce((sum, row) => sum + (parseFloat(row.hours) || 0), 0);
-}
-
-function updateHeatmapSummary(rows = [], statusMessage) {
-    const summaryElement = document.getElementById('heatmap-summary');
-    if (!summaryElement) return;
-
-    if (statusMessage) {
-        summaryElement.textContent = statusMessage;
-        return;
-    }
-
-    const totalHours = calculateTotalHours(rows);
-    const yearRatio = totalHours > 0 ? (totalHours / HOURS_PER_YEAR) * 100 : 0;
-    summaryElement.textContent = `年間換算: ${yearRatio.toFixed(1)}% (総計 ${totalHours.toFixed(1)}h)`;
-}
-
 // 保存処理
 async function handleSave() {
     const logDate = getTodayDateString();
@@ -199,8 +181,6 @@ async function handleLoad() {
         const data = await response.json();
 
         if (response.ok) {
-            updateHeatmapSummary(data.rows || []);
-
             // ヒートマップをリセット（完全にクリア）
             heatmapRoot.innerHTML = '';
 
@@ -210,11 +190,9 @@ async function handleLoad() {
                 heatmapRoot.innerHTML = '<p class="empty-message">本日のデータはまだ登録されていません</p>';
             }
         } else {
-            updateHeatmapSummary([], '年間換算: データ取得エラー');
             heatmapRoot.innerHTML = `<p class="empty-message">エラー: ${data.message || 'データの取得に失敗しました'}</p>`;
         }
     } catch (error) {
-        updateHeatmapSummary([], '年間換算: データ取得エラー');
         heatmapRoot.innerHTML = `<p class="empty-message">エラーが発生しました: ${error.message}</p>`;
     }
 }
