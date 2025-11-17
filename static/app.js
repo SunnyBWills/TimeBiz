@@ -222,13 +222,18 @@ async function handleLoad() {
 // ヒートマップ描画（Reactコンポーネントを使用）
 function renderHeatmap(data) {
     const heatmapRoot = document.getElementById('heatmap-root');
-    
+
     // 既存の内容を完全にリセット
     heatmapRoot.innerHTML = '';
-    
-    // Reactコンポーネントが読み込まれるまで待機
+
+    // Reactコンポーネントが読み込まれるまで待機（複数回リトライ）
+    const MAX_ATTEMPTS = 50; // 約10秒（200ms * 50）
+    let attemptCount = 0;
+
     function tryRender() {
-        if (window.HeatmapVisualization && React && ReactDOM) {
+        attemptCount += 1;
+
+        if (window.HeatmapVisualization && typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {
             try {
                 const root = ReactDOM.createRoot(heatmapRoot);
                 root.render(React.createElement(window.HeatmapVisualization, { data: data }));
@@ -236,19 +241,16 @@ function renderHeatmap(data) {
                 console.error('Reactレンダリングエラー:', error);
                 heatmapRoot.innerHTML = `<p class="empty-message">レンダリングエラー: ${error.message}</p>`;
             }
+            return;
+        }
+
+        if (attemptCount < MAX_ATTEMPTS) {
+            setTimeout(tryRender, 200);
         } else {
-            // まだ読み込まれていない場合、少し待ってから再試行
-            setTimeout(() => {
-                if (window.HeatmapVisualization && React && ReactDOM) {
-                    tryRender();
-                } else {
-                    // 最大5秒待っても読み込まれない場合
-                    heatmapRoot.innerHTML = '<p class="empty-message">Reactコンポーネントが読み込まれていません。ページを再読み込みしてください。</p>';
-                }
-            }, 100);
+            heatmapRoot.innerHTML = '<p class="empty-message">Reactコンポーネントが読み込まれていません。ページを再読み込んでください。</p>';
         }
     }
-    
+
     tryRender();
 }
 
