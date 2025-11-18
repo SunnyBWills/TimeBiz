@@ -81,7 +81,7 @@ function CategoryColumn({ category, tasks, totalHours, allCategoriesTotal, categ
                 <div className="text-gray-700 font-semibold" style={{
                     fontSize: '20px',
                     lineHeight: '1.6'
-                }}>{`${totalHours.toFixed(1)}h (${((totalHours / allCategoriesTotal) * 100).toFixed(1)}%)`}</div>
+                }}>{`${totalHours.toFixed(1)}h (${((totalHours / allCategoriesTotal) * 100).toFixed(1)}%), ${((totalHours / 8016) * 100).toFixed(1)}%`}</div>
             </div>
             
             {/* タスクリスト（固定高さのコンテナ内に配置） */}
@@ -100,7 +100,7 @@ function CategoryColumn({ category, tasks, totalHours, allCategoriesTotal, categ
                     // 計算済みの高さを使用（taskHeights配列から取得）
                     const taskHeight = taskHeights[index] || MIN_TASK_HEIGHT;
 
-                    const taskLabel = `${task.taskName}: ${task.hours.toFixed(1)}h (${globalRatio.toFixed(1)}%)`;
+                    const taskLabel = `${task.taskName}: ${task.hours.toFixed(1)}h (${globalRatio.toFixed(1)}%), ${((task.hours / 8016) * 100).toFixed(1)}%`;
 
                     return (
                         <div

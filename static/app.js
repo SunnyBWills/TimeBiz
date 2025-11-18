@@ -1,4 +1,4 @@
-const HOURS_PER_YEAR = 8760;
+const HOURS_PER_YEAR = 8016;
 
 // タブ切り替え機能
 document.addEventListener('DOMContentLoaded', function() {
